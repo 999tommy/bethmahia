@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, Award } from "lucide-react";
 
 const ParticleCanvas = dynamic(() => import("./ParticleCanvas"), { ssr: false });
 
@@ -28,7 +28,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
           >
             <span className="pill bg-[#E8B4B8]/30 text-[#6B4C55] border border-[#E8B4B8]/50 mb-6 inline-flex items-center gap-2">
-              <Sparkles size={14} className="text-[#C8868E]" />
+              <BadgeCheck size={14} className="text-[#C8868E]" />
               Social Media Manager • Lagos, NG
             </span>
           </motion.div>
@@ -82,7 +82,8 @@ export default function Hero() {
               id="hero-contact-btn"
               className="flex items-center gap-2 px-7 py-3.5 rounded-full border-2 border-[#E8B4B8] text-mauve font-semibold hover:bg-[#E8B4B8]/20 hover:scale-105 transition-all duration-250"
             >
-              Let&apos;s Talk ✨
+              Let&apos;s Talk
+              <ArrowRight size={16} className="text-[#C8868E]" />
             </Link>
           </motion.div>
 
@@ -137,16 +138,12 @@ export default function Hero() {
                 src="/beth.jpeg"
                 alt="Bethany Amahia — Social Media Manager"
                 fill
+                sizes="(max-width: 768px) 288px, 384px"
                 className="object-cover"
                 priority
-                onError={(e) => {
-                  // Show initials placeholder if image not found
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.style.display = "none";
-                }}
               />
               {/* Fallback gradient if no photo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#E8B4B8] to-[#C8A4D4] flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#E8B4B8] to-[#C8A4D4] flex items-center justify-center -z-10">
                 <span className="font-serif text-white text-7xl font-bold opacity-30">B</span>
               </div>
             </div>
@@ -155,16 +152,18 @@ export default function Hero() {
             <motion.div
               animate={{ y: [-8, 8, -8] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-4 -left-6 glass rounded-2xl px-4 py-2.5 shadow-card"
+              className="absolute -bottom-4 -left-6 glass rounded-2xl px-4 py-2.5 shadow-card flex items-center gap-2"
             >
-              <span className="text-xs text-mauve font-semibold">✨ Meta Certified</span>
+              <BadgeCheck size={14} className="text-[#C8868E]" />
+              <span className="text-xs text-mauve font-semibold">Meta Certified</span>
             </motion.div>
             <motion.div
               animate={{ y: [8, -8, 8] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -top-4 -right-6 glass rounded-2xl px-4 py-2.5 shadow-card"
+              className="absolute -top-4 -right-6 glass rounded-2xl px-4 py-2.5 shadow-card flex items-center gap-2"
             >
-              <span className="text-xs text-mauve font-semibold">🌟 HubSpot Certified</span>
+              <Award size={14} className="text-[#9B6DB5]" />
+              <span className="text-xs text-mauve font-semibold">HubSpot Certified</span>
             </motion.div>
           </div>
         </motion.div>

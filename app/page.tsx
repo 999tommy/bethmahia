@@ -7,10 +7,12 @@ import {
   Calendar,
   PenTool,
   Palette,
-  MessageCircle,
   Smartphone,
   TrendingUp,
   Users,
+  Mail,
+  MessageCircle,
+  Hash,
 } from "lucide-react";
 
 const services = [
@@ -88,15 +90,48 @@ const services = [
   },
 ];
 
+// Brand SVG logos using SimpleIcons CDN
 const tools = [
-  { name: "Canva", emoji: "🎨" },
-  { name: "CapCut", emoji: "🎬" },
-  { name: "Hootsuite", emoji: "📅" },
-  { name: "Google Analytics", emoji: "📊" },
-  { name: "Flick", emoji: "🔍" },
-  { name: "Meta Ads Manager", emoji: "📢" },
-  { name: "Buffer", emoji: "🗓️" },
-  { name: "Meta Business Suite", emoji: "💼" },
+  {
+    name: "Canva",
+    logo: "https://cdn.simpleicons.org/canva/00C4CC",
+    bg: "bg-[#00C4CC]/10",
+  },
+  {
+    name: "CapCut",
+    logo: "https://cdn.simpleicons.org/capcut/000000",
+    bg: "bg-black/8",
+  },
+  {
+    name: "Hootsuite",
+    logo: "https://cdn.simpleicons.org/hootsuite/000000",
+    bg: "bg-[#E8B4B8]/20",
+  },
+  {
+    name: "Google Analytics",
+    logo: "https://cdn.simpleicons.org/googleanalytics/E37400",
+    bg: "bg-[#E37400]/10",
+  },
+  {
+    name: "Meta Ads Manager",
+    logo: "https://cdn.simpleicons.org/meta/0081FB",
+    bg: "bg-[#0081FB]/10",
+  },
+  {
+    name: "Buffer",
+    logo: "https://cdn.simpleicons.org/buffer/168EEA",
+    bg: "bg-[#168EEA]/10",
+  },
+  {
+    name: "Meta Business Suite",
+    logo: "https://cdn.simpleicons.org/meta/0081FB",
+    bg: "bg-[#0081FB]/10",
+  },
+  {
+    name: "Flick",
+    logo: null, // Custom icon fallback
+    bg: "bg-[#C8A4D4]/20",
+  },
 ];
 
 const expertise = [
@@ -294,9 +329,20 @@ export default function AboutPage() {
                     delay: i * 0.2,
                   },
                 }}
-                className="glass rounded-2xl px-6 py-4 flex items-center gap-3 shadow-card hover:shadow-rose transition-all duration-300 cursor-default"
+                className="glass rounded-2xl px-5 py-4 flex items-center gap-3 shadow-card hover:shadow-rose transition-all duration-300 cursor-default"
               >
-                <span className="text-2xl">{tool.emoji}</span>
+                <div className={`w-9 h-9 rounded-xl ${tool.bg} flex items-center justify-center flex-shrink-0 p-1.5`}>
+                  {tool.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={tool.logo}
+                      alt={tool.name + " logo"}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <Hash size={18} className="text-[#9B6DB5]" />
+                  )}
+                </div>
                 <span className="font-medium text-mauve-dark text-sm">{tool.name}</span>
               </motion.div>
             ))}
@@ -377,18 +423,20 @@ export default function AboutPage() {
               <a
                 href="mailto:amahiabethany13@gmail.com"
                 id="cta-email-btn"
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#C8868E] to-[#9B6DB5] text-white font-semibold shadow-rose hover:shadow-lavender hover:scale-105 transition-all duration-250"
+                className="flex items-center gap-2.5 px-8 py-4 rounded-full bg-gradient-to-r from-[#C8868E] to-[#9B6DB5] text-white font-semibold shadow-rose hover:shadow-lavender hover:scale-105 transition-all duration-250"
               >
-                Email Me 📬
+                <Mail size={18} />
+                Email Me
               </a>
               <a
                 href="https://wa.me/2347065396249"
                 id="cta-whatsapp-btn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 rounded-full border-2 border-[#E8B4B8] text-mauve font-semibold hover:bg-[#E8B4B8]/20 hover:scale-105 transition-all duration-250"
+                className="flex items-center gap-2.5 px-8 py-4 rounded-full border-2 border-[#E8B4B8] text-mauve font-semibold hover:bg-[#E8B4B8]/20 hover:scale-105 transition-all duration-250"
               >
-                WhatsApp Me 💬
+                <MessageCircle size={18} />
+                WhatsApp Me
               </a>
             </div>
           </motion.div>

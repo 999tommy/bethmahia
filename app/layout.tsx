@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://bethmahia.netlify.app"),
   title: "Bethany Amahia | Social Media Manager",
   description:
     "Bethany Amahia Chioma — Social Media Manager based in Lagos, Nigeria. Expert in content strategy, community growth, paid campaigns, and brand storytelling. Meta, Accenture & HubSpot certified.",
@@ -15,16 +16,22 @@ export const metadata: Metadata = {
     "digital marketing",
     "community management",
   ],
+  icons: {
+    icon: "/beth.jpeg",
+    apple: "/beth.jpeg",
+  },
   openGraph: {
     title: "Bethany Amahia | Social Media Manager",
     description: "Result-driven social media manager helping brands tell stories that stop the scroll.",
     type: "website",
     url: "https://bethmahia.netlify.app",
+    images: [{ url: "/beth.jpeg" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Bethany Amahia | Social Media Manager",
     description: "Result-driven social media manager helping brands tell stories that stop the scroll.",
+    images: ["/beth.jpeg"],
   },
 };
 
