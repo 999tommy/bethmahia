@@ -16,7 +16,7 @@ const itemVariants: Variants = {
 const experience = [
   {
     role: "Junior Social Media Manager",
-    company: "Naijabiz Organisation",
+    company: "Qriblo (https://qriblo.com)",
     period: "November 2025 – July 2026",
     type: "Full-time",
     color: "#E8B4B8",

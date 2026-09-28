@@ -19,7 +19,7 @@ CORE SKILLS
 •  Influencer & partnership coordination
 •  Cross-functional collaboration with design & marketing teams
 PROFESSIONAL EXPERIENCE
-Junior Social Media Manager  |  Naijabiz Organisation                                                                                         november 2025 – july 2026
+Junior Social Media Manager  |  Qriblo (https://qriblo.com)                                                                                         november 2025 – july 2026
 •   Owned end-to-end social media management across Instagram, Facebook, and X/Twitter, including content planning, scheduling, and publishing.
 •   Grew combined follower base by an estimated 30–40% over 9 months through consistent posting and audience-focused content.
 •   Increased average post engagement rate by an estimated 20–25% by refining content format, captions, and posting times based on analytics.

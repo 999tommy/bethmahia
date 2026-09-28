@@ -24,9 +24,9 @@ const itemVariants: Variants = {
 
 const works = [
   {
-    id: "naijabiz",
+    id: "qriblo",
     role: "Junior Social Media Manager",
-    company: "Naijabiz Organisation",
+    company: "Qriblo (https://qriblo.com)",
     period: "November 2025 – July 2026",
     duration: "9 months",
     platforms: ["Instagram", "Facebook", "X/Twitter"],
@@ -35,7 +35,7 @@ const works = [
     border: "border-[#E8B4B8]/40",
     accent: "#C8868E",
     emoji: "🌸",
-    story: `This is where I grew up professionally. When I stepped into the Junior Social Media Manager role at Naijabiz, I wasn't just handed tasks — I was handed ownership. I owned the entire social media presence: the strategy, the content, the publishing, the community, the ads, and the reports.
+    story: `This is where I grew up professionally. When I stepped into the Junior Social Media Manager role at Qriblo, I wasn't just handed tasks — I was handed ownership. I owned the entire social media presence: the strategy, the content, the publishing, the community, the ads, and the reports.
 
 There were weeks when I'd refresh analytics at midnight, not because I had to, but because I genuinely wanted to see how a caption tweak had moved the needle. I refined posting times, experimented with formats, listened to the community's feedback in the comments, and watched the numbers respond. That feedback loop — creativity, data, and community — became my favourite part of the job.
 
