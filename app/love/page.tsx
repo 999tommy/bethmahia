@@ -138,6 +138,7 @@ export default function LovePage() {
   }, [goToScene]);
 
   const handleEnvelopeOpen = useCallback(() => {
+    setAudioUnlocked(true);
     goToScene("letter");
   }, [goToScene]);
 

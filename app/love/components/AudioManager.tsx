@@ -2,43 +2,37 @@
 
 // ─────────────────────────────────────────────────────────────
 // AudioManager.tsx
-// Manages ambient background music and sound effects.
-// Audio starts ONLY after first user gesture (iOS compliance).
-// Provides mute/unmute toggle.
+// Manages background music: "Save Your Tears" by The Weeknd.
+// Audio starts gracefully after first user interaction.
+// Provides volume fade-in, looping, and mute/unmute control.
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { loveConfig } from "../love.config";
 
 interface AudioManagerProps {
-  unlocked: boolean; // true after first user gesture
+  unlocked: boolean; // true after user enters or taps to begin
 }
 
-// Royalty-free ambient piano from Pixabay
-// Attribution: "Love Memories" by Lesfm (Pixabay License)
-// URL: https://pixabay.com/music/beautiful-plays-love-memories-108735/
-// We use a URL so no file needs to be bundled. Swap with a local file
-// by replacing the src with e.g. "/music/ambient.mp3"
-const AMBIENT_SRC = "https://cdn.pixabay.com/audio/2022/03/09/audio_ff1e839cc7.mp3";
+const SONG_SRC = loveConfig.audioTrack || "/save-your-tears.mp3";
+const TARGET_VOLUME = 0.45;
 
 export default function AudioManager({ unlocked }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [muted, setMuted] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const [playing, setPlaying] = useState(false);
 
-  // Create audio element once
+  // Initialize audio element once
   useEffect(() => {
     const audio = new Audio();
-    audio.src = AMBIENT_SRC;
+    audio.src = SONG_SRC;
     audio.loop = true;
     audio.volume = 0;
-    audio.preload = "none";
+    audio.preload = "auto";
     audioRef.current = audio;
 
-    audio.addEventListener("canplaythrough", () => setLoaded(true));
-    audio.addEventListener("error", () => {
-      // Silently fail — audio is optional
-      console.warn("[Love] Ambient audio failed to load — continuing without sound.");
+    audio.addEventListener("error", (e) => {
+      console.warn("[Love] Audio playback failed to load:", e);
     });
 
     return () => {
@@ -47,35 +41,55 @@ export default function AudioManager({ unlocked }: AudioManagerProps) {
     };
   }, []);
 
-  // Start playback after unlock
+  // Start playback when unlocked, with gesture-fallback for mobile
   useEffect(() => {
     if (!unlocked || !audioRef.current || playing) return;
     const audio = audioRef.current;
 
-    const startPlay = async () => {
+    const playAudio = async () => {
       try {
-        audio.load();
         await audio.play();
         setPlaying(true);
-        // Fade in
-        fadeVolume(audio, 0, 0.18, 3000);
+        fadeVolume(audio, 0, TARGET_VOLUME, 2000);
       } catch {
-        // Autoplay blocked — will try again on next interaction
+        // If browser autoplay policy blocks, hook into next touch/click anywhere
+        const resumeOnNextTap = async () => {
+          try {
+            await audio.play();
+            setPlaying(true);
+            fadeVolume(audio, 0, TARGET_VOLUME, 2000);
+            cleanupListeners();
+          } catch {}
+        };
+
+        const cleanupListeners = () => {
+          window.removeEventListener("pointerdown", resumeOnNextTap);
+          window.removeEventListener("touchstart", resumeOnNextTap);
+          window.removeEventListener("click", resumeOnNextTap);
+        };
+
+        window.addEventListener("pointerdown", resumeOnNextTap, { once: true });
+        window.addEventListener("touchstart", resumeOnNextTap, { once: true });
+        window.addEventListener("click", resumeOnNextTap, { once: true });
       }
     };
 
-    startPlay();
+    playAudio();
   }, [unlocked, playing]);
 
-  // Mute/unmute
+  // Mute / Unmute handler
   const toggleMute = useCallback(() => {
     setMuted((prev) => {
       const next = !prev;
       if (audioRef.current) {
         if (next) {
-          fadeVolume(audioRef.current, audioRef.current.volume, 0, 500);
+          fadeVolume(audioRef.current, audioRef.current.volume, 0, 400);
         } else {
-          fadeVolume(audioRef.current, 0, 0.18, 800);
+          // If paused, ensure it's playing
+          if (audioRef.current.paused) {
+            audioRef.current.play().catch(() => {});
+          }
+          fadeVolume(audioRef.current, 0, TARGET_VOLUME, 600);
         }
       }
       return next;
@@ -90,7 +104,12 @@ export default function AudioManager({ unlocked }: AudioManagerProps) {
       onClick={toggleMute}
       className="love-volume-btn"
       aria-label={muted ? "Unmute music" : "Mute music"}
-      title={muted ? "Unmute" : "Mute"}
+      title={muted ? "Unmute Save Your Tears" : "Mute Save Your Tears"}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {muted ? (
         // Muted icon
@@ -100,7 +119,7 @@ export default function AudioManager({ unlocked }: AudioManagerProps) {
           <line x1="17" y1="9" x2="23" y2="15" />
         </svg>
       ) : (
-        // Speaker icon
+        // Speaker playing icon with subtle sound waves
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <path d="M11 5L6 9H2v6h4l5 4V5z" />
           <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -118,7 +137,7 @@ function fadeVolume(
   to: number,
   durationMs: number
 ) {
-  const steps = 30;
+  const steps = 25;
   const stepTime = durationMs / steps;
   const step = (to - from) / steps;
   let current = from;
@@ -131,4 +150,3 @@ function fadeVolume(
     if (count >= steps) clearInterval(interval);
   }, stepTime);
 }
-

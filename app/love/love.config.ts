@@ -74,6 +74,9 @@ export const loveConfig = {
     "E468900F-529A-4EB2-896B-17C5BD6167D2.mp4",
   ],
 
+  // ── Music ──────────────────────────────────────────────────
+  audioTrack: "/save-your-tears.mp3",
+
   // ── Favourite flower ──────────────────────────────────────
   favouriteFlower: "rose",
   flowerColour: "#E8B4B8",
