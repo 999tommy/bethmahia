@@ -192,6 +192,7 @@ export default function LovePage() {
           <motion.div key="gate"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 1.4 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <SecretGate onUnlock={handleUnlock} />
           </motion.div>
@@ -201,6 +202,7 @@ export default function LovePage() {
           <motion.div key="envelope"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.8 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Envelope onOpen={handleEnvelopeOpen} />
           </motion.div>
@@ -210,6 +212,7 @@ export default function LovePage() {
           <motion.div key="letter"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <Letter onComplete={handleLetterComplete} />
@@ -223,6 +226,7 @@ export default function LovePage() {
           <motion.div key="garden"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <Garden />
@@ -236,11 +240,11 @@ export default function LovePage() {
           <motion.div key="galaxy"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             {/* GalaxyScene is dynamic (no SSR), wrapped in Suspense for loading UI */}
             <Suspense fallback={<LoveLoader />}>
-              <GalaxyScene />
-              <SceneAdvance label="Walk through our story" onAdvance={() => goToScene("timeline")} />
+              <GalaxyScene onAdvance={() => goToScene("timeline")} />
             </Suspense>
           </motion.div>
         )}
@@ -249,6 +253,7 @@ export default function LovePage() {
           <motion.div key="timeline"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <Timeline />
@@ -261,6 +266,7 @@ export default function LovePage() {
           <motion.div key="scrapbook"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <Scrapbook />
@@ -273,6 +279,7 @@ export default function LovePage() {
           <motion.div key="fireworks"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.6 } }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <Fireworks />
@@ -285,6 +292,7 @@ export default function LovePage() {
           <motion.div key="ending"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Suspense fallback={<LoveLoader />}>
               <QuietEnding onReplay={handleReplay} />

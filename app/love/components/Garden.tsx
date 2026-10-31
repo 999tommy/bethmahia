@@ -234,7 +234,7 @@ function Rose({
         position: "absolute",
         bottom: 0,
         left: `${rose.x}%`,
-        transform: "translateX(-50%)",
+        x: "-50%",
         cursor: "pointer",
         zIndex: Math.floor(rose.scale * 3),
         userSelect: "none",

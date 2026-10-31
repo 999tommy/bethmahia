@@ -220,8 +220,9 @@ export default function Envelope({ onOpen }: EnvelopeProps) {
             style={{
               position: "absolute",
               bottom: "18%",
-              left: "50%",
-              transform: "translateX(-50%)",
+              left: 0,
+              right: 0,
+              margin: "0 auto",
               background: "transparent",
               border: "none",
               padding: 0,

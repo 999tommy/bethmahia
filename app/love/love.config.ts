@@ -25,7 +25,7 @@ export const loveConfig = {
       label: "Marv Nook",
       date: "November 2024",
       caption: "The first date.",
-      photo: "IMG_2891.jpeg",
+      photo: "IMG_0511.jpeg",
       emoji: "🌿",
     },
     {
@@ -43,7 +43,7 @@ export const loveConfig = {
       date: "2025",
       caption:
         "The cinema. The movie. Your hand in mine. That feeling I couldn't name but didn't want to let go of.",
-      photo: "95a54b22-676a-4213-8420-b19e2351c821.jpeg",
+      photo: "ac89a02c-b009-4a13-baed-9f738adcac13.jpeg",
       emoji: "🎬",
     },
     {
@@ -61,9 +61,7 @@ export const loveConfig = {
   photos: [
     "beth.jpeg",
     "IMG_0511.jpeg",
-    "IMG_2891.jpeg",
     "IMG_7317.jpeg",
-    "95a54b22-676a-4213-8420-b19e2351c821.jpeg",
     "ac89a02c-b009-4a13-baed-9f738adcac13.jpeg",
     "b2a157f7-9b89-4068-a242-9c6894219cdf.jpeg",
     "daf5897d-f92d-425b-b122-dcfa2d9e9da0.jpeg",

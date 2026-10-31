@@ -439,12 +439,14 @@ export default function Fireworks() {
           style={{
             position: "absolute",
             top: "8%",
-            left: "50%",
-            transform: "translateX(-50%)",
+            left: 0,
+            right: 0,
+            margin: "0 auto",
             textAlign: "center",
             zIndex: 20,
             pointerEvents: "none",
             width: "90%",
+            maxWidth: 600,
           }}
         >
           <p
@@ -482,12 +484,14 @@ export default function Fireworks() {
             style={{
               position: "absolute",
               top: "20%",
-              left: "50%",
-              transform: "translateX(-50%)",
+              left: 0,
+              right: 0,
+              margin: "0 auto",
               textAlign: "center",
               zIndex: 30,
               pointerEvents: "none",
               width: "90%",
+              maxWidth: 650,
             }}
           >
             <motion.p
@@ -512,8 +516,11 @@ export default function Fireworks() {
           style={{
             position: "absolute",
             bottom: "32%",
-            left: "50%",
-            transform: "translateX(-50%)",
+            left: 0,
+            right: 0,
+            margin: "0 auto",
+            width: "90%",
+            textAlign: "center",
             fontFamily: "var(--l-font-body)",
             fontStyle: "italic",
             fontSize: "0.8rem",

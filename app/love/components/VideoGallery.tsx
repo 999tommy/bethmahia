@@ -135,8 +135,10 @@ function PhotoCard({ src, index }: { src: string; index: number }) {
         style={{
           position: "absolute",
           top: -9,
-          left: "50%",
-          transform: `translateX(-50%) rotate(${tilt * 0.7}deg)`,
+          left: 0,
+          right: 0,
+          margin: "0 auto",
+          transform: `rotate(${tilt * 0.7}deg)`,
           width: 48,
           height: 18,
           background: index % 3 === 0

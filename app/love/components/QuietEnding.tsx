@@ -3,10 +3,11 @@
 // ─────────────────────────────────────────────────────────────
 // QuietEnding.tsx
 // The final scene. Personal message, replay button,
-// and a private "write me back" field (localStorage).
+// and a "write me back" field that pre-fills a WhatsApp
+// message to Tommy's number so Beth can send it with one tap.
 // ─────────────────────────────────────────────────────────────
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { loveConfig } from "../love.config";
 
@@ -16,18 +17,14 @@ interface QuietEndingProps {
 
 export default function QuietEnding({ onReplay }: QuietEndingProps) {
   const [note, setNote] = useState("");
-  const [noteSaved, setNoteSaved] = useState(false);
-  const [existingNote, setExistingNote] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("love-note-for-tommy");
-    if (saved) setExistingNote(saved);
-  }, []);
-
-  const handleSaveNote = () => {
+  const handleSendToWhatsApp = () => {
     if (!note.trim()) return;
-    localStorage.setItem("love-note-for-tommy", note.trim());
-    setNoteSaved(true);
+    // Pre-fill a WhatsApp message to Tommy's number
+    const encoded = encodeURIComponent(note.trim());
+    window.open(`https://wa.me/2349131298538?text=${encoded}`, "_blank");
+    setSent(true);
     if ("vibrate" in navigator) navigator.vibrate([20, 10, 30, 10, 20]);
   };
 
@@ -133,32 +130,7 @@ export default function QuietEnding({ onReplay }: QuietEndingProps) {
         transition={{ delay: 1, duration: 0.9 }}
         style={{ maxWidth: 380, width: "100%", textAlign: "center" }}
       >
-        {existingNote && !noteSaved ? (
-          <div>
-            <p
-              style={{
-                fontFamily: "var(--l-font-display)",
-                fontStyle: "italic",
-                fontSize: "0.85rem",
-                color: "rgba(201,151,43,0.6)",
-                marginBottom: 10,
-                letterSpacing: "0.08em",
-              }}
-            >
-              you left a note before:
-            </p>
-            <p
-              style={{
-                fontFamily: "var(--l-font-script)",
-                fontSize: "1.3rem",
-                color: "#E8B4B8",
-                lineHeight: 1.5,
-              }}
-            >
-              &ldquo;{existingNote}&rdquo;
-            </p>
-          </div>
-        ) : noteSaved ? (
+        {sent ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -171,7 +143,7 @@ export default function QuietEnding({ onReplay }: QuietEndingProps) {
                 color: "#E8B4B8",
               }}
             >
-              I&apos;ll keep it safe. ♡
+              I can&apos;t wait to read it. ♡
             </p>
           </motion.div>
         ) : (
@@ -186,7 +158,7 @@ export default function QuietEnding({ onReplay }: QuietEndingProps) {
                 letterSpacing: "0.06em",
               }}
             >
-              write me something back — I&apos;ll keep it here
+              write me something back
             </p>
             <textarea
               value={note}
@@ -215,7 +187,7 @@ export default function QuietEnding({ onReplay }: QuietEndingProps) {
               }}
             />
             <motion.button
-              onClick={handleSaveNote}
+              onClick={handleSendToWhatsApp}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               style={{
@@ -232,8 +204,20 @@ export default function QuietEnding({ onReplay }: QuietEndingProps) {
                 letterSpacing: "0.05em",
               }}
             >
-              save it for him
+              send it to him ♡
             </motion.button>
+            <p
+              style={{
+                marginTop: 8,
+                fontFamily: "var(--l-font-body)",
+                fontStyle: "italic",
+                fontSize: "0.72rem",
+                color: "rgba(201,151,43,0.35)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              this will open WhatsApp with your message ready to send
+            </p>
           </div>
         )}
       </motion.div>

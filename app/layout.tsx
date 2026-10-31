@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bethmahia.netlify.app"),
   title: "Bethany Amahia | Social Media Manager",
   description:
-    "Bethany Amahia Chioma — Social Media Manager based in Lagos, Nigeria. Expert in content strategy, community growth, paid campaigns, and brand storytelling. Meta, Accenture & HubSpot certified.",
+    "Bethany Amahia Chioma - Social Media Manager based in Lagos, Nigeria. Expert in content strategy, community growth, paid campaigns, and brand storytelling. Meta, Accenture & HubSpot certified.",
   keywords: [
     "social media manager",
     "content strategy",
@@ -43,9 +42,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans bg-cream text-mauve-dark antialiased">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        {/* ConditionalLayout hides Navbar/Footer on /love */}
+        <ConditionalLayout>{children}</ConditionalLayout>
       </body>
     </html>
   );
