@@ -3,150 +3,190 @@
 // ─────────────────────────────────────────────────────────────
 // AudioManager.tsx
 // Manages background music: "Save Your Tears" by The Weeknd.
-// Audio starts gracefully after first user interaction.
-// Provides volume fade-in, looping, and mute/unmute control.
+// - Always visible music pill / button (z-index 9999).
+// - Unlocks and plays on first tap/touch anywhere on the page.
+// - Direct volume set to 0.65 (audible and clear across all devices).
+// - Click toggle for Play / Pause / Mute.
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { loveConfig } from "../love.config";
 
 interface AudioManagerProps {
-  unlocked: boolean; // true after user enters or taps to begin
+  unlocked?: boolean;
 }
 
 const SONG_SRC = loveConfig.audioTrack || "/save-your-tears.mp3";
-const TARGET_VOLUME = 0.45;
+const DEFAULT_VOLUME = 0.65;
 
 export default function AudioManager({ unlocked }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [muted, setMuted] = useState(false);
-  const [playing, setPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
-  // Initialize audio element once
+  // Helper to start playback safely
+  const attemptPlay = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    try {
+      audio.volume = DEFAULT_VOLUME;
+      await audio.play();
+      setIsPlaying(true);
+      setHasInteracted(true);
+    } catch {
+      // Browser autoplay policy might block until explicit user gesture
+    }
+  }, []);
+
+  // Hook into first user interaction anywhere on the screen
   useEffect(() => {
-    const audio = new Audio();
-    audio.src = SONG_SRC;
-    audio.loop = true;
-    audio.volume = 0;
-    audio.preload = "auto";
-    audioRef.current = audio;
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = DEFAULT_VOLUME;
+    }
 
-    audio.addEventListener("error", (e) => {
-      console.warn("[Love] Audio playback failed to load:", e);
-    });
+    const onFirstUserAction = () => {
+      attemptPlay();
+      window.removeEventListener("pointerdown", onFirstUserAction);
+      window.removeEventListener("touchstart", onFirstUserAction);
+      window.removeEventListener("click", onFirstUserAction);
+      window.removeEventListener("keydown", onFirstUserAction);
+    };
+
+    window.addEventListener("pointerdown", onFirstUserAction, { passive: true });
+    window.addEventListener("touchstart", onFirstUserAction, { passive: true });
+    window.addEventListener("click", onFirstUserAction, { passive: true });
+    window.addEventListener("keydown", onFirstUserAction, { passive: true });
+
+    // Also attempt play immediately in case browser allows it (or already interacted)
+    attemptPlay();
 
     return () => {
-      audio.pause();
-      audio.src = "";
+      window.removeEventListener("pointerdown", onFirstUserAction);
+      window.removeEventListener("touchstart", onFirstUserAction);
+      window.removeEventListener("click", onFirstUserAction);
+      window.removeEventListener("keydown", onFirstUserAction);
     };
-  }, []);
+  }, [attemptPlay]);
 
-  // Start playback when unlocked, with gesture-fallback for mobile
+  // When unlocked prop changes from parent (e.g. gate unlocked), ensure play
   useEffect(() => {
-    if (!unlocked || !audioRef.current || playing) return;
+    if (unlocked) {
+      attemptPlay();
+    }
+  }, [unlocked, attemptPlay]);
+
+  // Toggle button click
+  const togglePlayPause = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const audio = audioRef.current;
+    if (!audio) return;
 
-    const playAudio = async () => {
-      try {
-        await audio.play();
-        setPlaying(true);
-        fadeVolume(audio, 0, TARGET_VOLUME, 2000);
-      } catch {
-        // If browser autoplay policy blocks, hook into next touch/click anywhere
-        const resumeOnNextTap = async () => {
-          try {
-            await audio.play();
-            setPlaying(true);
-            fadeVolume(audio, 0, TARGET_VOLUME, 2000);
-            cleanupListeners();
-          } catch {}
-        };
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      audio.volume = DEFAULT_VOLUME;
+      audio.play().then(() => {
+        setIsPlaying(true);
+        setHasInteracted(true);
+      }).catch((err) => {
+        console.warn("Audio play failed:", err);
+      });
+    }
 
-        const cleanupListeners = () => {
-          window.removeEventListener("pointerdown", resumeOnNextTap);
-          window.removeEventListener("touchstart", resumeOnNextTap);
-          window.removeEventListener("click", resumeOnNextTap);
-        };
-
-        window.addEventListener("pointerdown", resumeOnNextTap, { once: true });
-        window.addEventListener("touchstart", resumeOnNextTap, { once: true });
-        window.addEventListener("click", resumeOnNextTap, { once: true });
-      }
-    };
-
-    playAudio();
-  }, [unlocked, playing]);
-
-  // Mute / Unmute handler
-  const toggleMute = useCallback(() => {
-    setMuted((prev) => {
-      const next = !prev;
-      if (audioRef.current) {
-        if (next) {
-          fadeVolume(audioRef.current, audioRef.current.volume, 0, 400);
-        } else {
-          // If paused, ensure it's playing
-          if (audioRef.current.paused) {
-            audioRef.current.play().catch(() => {});
-          }
-          fadeVolume(audioRef.current, 0, TARGET_VOLUME, 600);
-        }
-      }
-      return next;
-    });
-    if ("vibrate" in navigator) navigator.vibrate(10);
-  }, []);
-
-  if (!unlocked) return null;
+    if ("vibrate" in navigator) navigator.vibrate(15);
+  };
 
   return (
-    <button
-      onClick={toggleMute}
-      className="love-volume-btn"
-      aria-label={muted ? "Unmute music" : "Mute music"}
-      title={muted ? "Unmute Save Your Tears" : "Mute Save Your Tears"}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {muted ? (
-        // Muted icon
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M11 5L6 9H2v6h4l5 4V5z" />
-          <line x1="23" y1="9" x2="17" y2="15" />
-          <line x1="17" y1="9" x2="23" y2="15" />
-        </svg>
-      ) : (
-        // Speaker playing icon with subtle sound waves
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M11 5L6 9H2v6h4l5 4V5z" />
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-        </svg>
-      )}
-    </button>
+    <>
+      {/* HTML5 Audio element in the DOM */}
+      <audio
+        ref={audioRef}
+        src={SONG_SRC}
+        loop
+        preload="auto"
+        playsInline
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onError={(e) => console.warn("[Love] Audio failed to load:", e)}
+      />
+
+      {/* Floating Music Control Button (Always visible on top) */}
+      <button
+        onClick={togglePlayPause}
+        className="love-volume-btn"
+        aria-label={isPlaying ? "Pause music" : "Play Save Your Tears"}
+        title={isPlaying ? "Save Your Tears · Playing (tap to pause)" : "Save Your Tears · Paused (tap to play)"}
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          width: isPlaying ? "auto" : "auto",
+          padding: isPlaying ? "8px 14px" : "10px 16px",
+          borderRadius: "9999px",
+          background: isPlaying
+            ? "rgba(26, 10, 0, 0.75)"
+            : "linear-gradient(135deg, rgba(201, 151, 43, 0.85) 0%, rgba(139, 26, 26, 0.85) 100%)",
+          border: isPlaying
+            ? "1px solid rgba(201, 151, 43, 0.5)"
+            : "1px solid rgba(255, 228, 160, 0.8)",
+          boxShadow: isPlaying
+            ? "0 4px 20px rgba(0, 0, 0, 0.4)"
+            : "0 4px 25px rgba(201, 151, 43, 0.5)",
+          color: isPlaying ? "var(--l-gold)" : "#FFF",
+          cursor: "pointer",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          transition: "all 0.3s ease",
+          animation: !isPlaying && !hasInteracted ? "love-pulse 2s infinite ease-in-out" : "none",
+        }}
+      >
+        {isPlaying ? (
+          <>
+            {/* Animated sound waves */}
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+            <span
+              style={{
+                fontFamily: "var(--l-font-display)",
+                fontStyle: "italic",
+                fontSize: "0.8rem",
+                letterSpacing: "0.04em",
+                color: "#FFE4A0",
+              }}
+            >
+              Save Your Tears
+            </span>
+          </>
+        ) : (
+          <>
+            {/* Play icon */}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <span
+              style={{
+                fontFamily: "var(--l-font-display)",
+                fontStyle: "italic",
+                fontSize: "0.82rem",
+                letterSpacing: "0.05em",
+                fontWeight: 600,
+              }}
+            >
+              Play Music ♫
+            </span>
+          </>
+        )}
+      </button>
+    </>
   );
-}
-
-// ── Volume fade utility ────────────────────────────────────
-function fadeVolume(
-  audio: HTMLAudioElement,
-  from: number,
-  to: number,
-  durationMs: number
-) {
-  const steps = 25;
-  const stepTime = durationMs / steps;
-  const step = (to - from) / steps;
-  let current = from;
-  let count = 0;
-
-  const interval = setInterval(() => {
-    current += step;
-    count++;
-    audio.volume = Math.max(0, Math.min(1, current));
-    if (count >= steps) clearInterval(interval);
-  }, stepTime);
 }
