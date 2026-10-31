@@ -22,13 +22,25 @@ export default function Letter({ onComplete }: LetterProps) {
   const [revealedBlots, setRevealedBlots] = useState<Set<number>>(new Set());
   const [activeBlot, setActiveBlot] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const isNearBottom = useInView(bottomRef, { once: true, margin: "-20%" });
 
+  // Advance only when bottom of the letter is scrolled all the way to the top of the screen
   useEffect(() => {
-    if (isNearBottom && onComplete) {
-      setTimeout(onComplete, 800);
-    }
-  }, [isNearBottom, onComplete]);
+    if (!onComplete) return;
+
+    let triggered = false;
+    const handleScroll = () => {
+      if (triggered || !bottomRef.current) return;
+      const rect = bottomRef.current.getBoundingClientRect();
+      // rect.top <= 40 means the bottom of the letter has reached the top of the viewport
+      if (rect.top <= 40 && rect.top > -300) {
+        triggered = true;
+        onComplete();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [onComplete]);
 
   const handleBlotClick = (i: number) => {
     setRevealedBlots((prev) => new Set([...prev, i]));
