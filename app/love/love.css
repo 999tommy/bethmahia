@@ -1,0 +1,307 @@
+/* ============================================================
+   love.css — Scoped styles for the /love experience
+   ALL custom properties are prefixed with --l- to avoid
+   colliding with the global design system.
+   ============================================================ */
+
+/* ── Font Imports ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Courier+Prime&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────── */
+.love-root {
+  --l-parchment:       #F8F0E3;
+  --l-parchment-aged:  #EAD8B1;
+  --l-parchment-dark:  #D4B896;
+  --l-ink:             #1A0A00;
+  --l-ink-sepia:       #5C3D1E;
+  --l-ink-faded:       #8B6347;
+  --l-wax:             #8B1A1A;
+  --l-wax-light:       #B22222;
+  --l-gold:            #C9972B;
+  --l-gold-light:      #E8C060;
+  --l-rose-petal:      #E8B4B8;
+  --l-rose-deep:       #C8868E;
+  --l-midnight:        #070714;
+  --l-midnight-mid:    #0D0D2B;
+  --l-midnight-soft:   #1A1A3E;
+  --l-star-gold:       #FFE4A0;
+  --l-star-bright:     #FFFFFF;
+
+  --l-font-script:     'Pinyon Script', cursive;
+  --l-font-display:    'Cormorant Garamond', Georgia, serif;
+  --l-font-body:       'EB Garamond', Georgia, serif;
+  --l-font-mono:       'Courier Prime', monospace;
+
+  --l-ease-soft:       cubic-bezier(0.25, 0.1, 0.25, 1);
+  --l-ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --l-ease-in-expo:    cubic-bezier(0.7, 0, 0.84, 0);
+
+  font-family: var(--l-font-body);
+  color: var(--l-ink);
+  background: var(--l-midnight);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Reset for love root ──────────────────────────────────── */
+.love-root *,
+.love-root *::before,
+.love-root *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Full-screen scene base ───────────────────────────────── */
+.love-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.love-script {
+  font-family: var(--l-font-script);
+  line-height: 1.3;
+}
+
+.love-display {
+  font-family: var(--l-font-display);
+  font-style: italic;
+}
+
+.love-body {
+  font-family: var(--l-font-body);
+}
+
+.love-mono {
+  font-family: var(--l-font-mono);
+}
+
+/* ── Paper texture ────────────────────────────────────────── */
+.love-paper {
+  background-color: var(--l-parchment);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* Aged version with more texture */
+.love-paper-aged {
+  background-color: var(--l-parchment-aged);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* Burnt / vignette edges */
+.love-paper-edges {
+  box-shadow:
+    inset 0 0 80px rgba(90, 50, 10, 0.35),
+    inset 0 0 20px rgba(90, 50, 10, 0.25),
+    0 20px 80px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Wax seal ─────────────────────────────────────────────── */
+.love-seal {
+  cursor: pointer;
+  transition: transform 0.2s var(--l-ease-soft);
+  transform-origin: center;
+  filter: drop-shadow(0 4px 12px rgba(139,26,26,0.6));
+}
+
+.love-seal:hover {
+  transform: scale(1.05);
+}
+
+/* ── Petal cursor trail ───────────────────────────────────── */
+.love-petal-trail {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.love-petal {
+  position: absolute;
+  width: 12px;
+  height: 10px;
+  border-radius: 50% 0 50% 0;
+  background: var(--l-rose-petal);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Volume control ───────────────────────────────────────── */
+.love-volume-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(26, 10, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(201, 151, 43, 0.4);
+  color: var(--l-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.love-volume-btn:hover {
+  background: rgba(26, 10, 0, 0.85);
+  transform: scale(1.1);
+}
+
+/* ── Skip / progress ──────────────────────────────────────── */
+.love-skip-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: var(--l-font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.2s;
+}
+
+.love-skip-btn:hover {
+  color: rgba(255,255,255,0.8);
+}
+
+/* ── Card overlays ────────────────────────────────────────── */
+.love-card-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 7, 20, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Ink blot ─────────────────────────────────────────────── */
+.love-ink-blot {
+  display: inline-block;
+  width: 28px;
+  height: 22px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* ── Reason card ──────────────────────────────────────────── */
+.love-reason-card {
+  position: absolute;
+  width: 260px;
+  padding: 20px 24px;
+  border-radius: 2px;
+  transform-origin: top left;
+  font-family: var(--l-font-script);
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--l-ink);
+  pointer-events: none;
+}
+
+/* ── Polaroid ─────────────────────────────────────────────── */
+.love-polaroid {
+  background: white;
+  padding: 12px 12px 40px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.love-polaroid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.love-polaroid-caption {
+  position: absolute;
+  bottom: 8px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--l-font-script);
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* ── Night sky ────────────────────────────────────────────── */
+.love-night-sky {
+  background: radial-gradient(ellipse at top, #1a1a3e 0%, #070714 60%);
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes love-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.85; }
+  94% { opacity: 1; }
+}
+
+@keyframes love-float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(0.5deg); }
+  66% { transform: translateY(-4px) rotate(-0.3deg); }
+}
+
+@keyframes love-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(201, 151, 43, 0.6)); }
+  50% { filter: drop-shadow(0 0 20px rgba(201, 151, 43, 0.9)); }
+}
+
+@keyframes love-heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  56% { transform: scale(1); }
+}
+
+@keyframes love-petal-fall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.9; }
+  100% { transform: translateY(120px) rotate(180deg) scale(0.5); opacity: 0; }
+}
+
+@keyframes love-ink-spread {
+  0% { clip-path: circle(0% at 50% 50%); }
+  100% { clip-path: circle(150% at 50% 50%); }
+}
+
+/* ── Accessibility ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .love-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Mobile Safari 100dvh fix ─────────────────────────────── */
+@supports not (height: 100dvh) {
+  .love-scene {
+    min-height: -webkit-fill-available;
+  }
+}
+
